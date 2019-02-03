@@ -3,10 +3,11 @@ from keras.models import Sequential
 from keras.layers import Dense, Activation, Dropout, BatchNormalization
 from keras.layers import Conv2D, MaxPooling2D, Flatten
 from matplotlib import pyplot as plt
+import keras
 import modelconfig as cfg
 
 MODEL_SAVE_NAME = "Lolipop"
-MODEL_LOAD_NAME = ""
+MODEL_LOAD_NAME = "Lolipop"
 
 SAVE_PATH = cfg.paths['save'] + MODEL_SAVE_NAME
 MODEL_PATH = cfg.paths['model'] + MODEL_LOAD_NAME
@@ -51,19 +52,15 @@ predict_generator = test_datagen.flow_from_directory(
     seed=35
 )
 
-"""
-
-path_model=MODEL_PATH
-model = keras.models.load_model(path_model)
-
-
-hist_internet= model.predict_generator(
-predict_generator,
-steps=8
-)
-
-"""
-
+# path_model= MODEL_PATH
+# model = keras.models.load_model(path_model)
+#
+#
+# hist_internet= model.predict_generator(
+# predict_generator,
+# steps=8
+# )
+#
 
 model = Sequential()
 model.add(Conv2D(16, kernel_size=(3, 3), strides=(1, 1), activation='relu', input_shape=(64, 64, 3)))
