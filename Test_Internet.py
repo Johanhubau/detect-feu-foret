@@ -2,6 +2,18 @@ from PIL import Image
 import numpy as np
 import keras
 import os
+import modelconfig as cfg
+
+MODEL_SAVE_NAME = "Lolipop"
+MODEL_LOAD_NAME = "Lolipop"
+
+SAVE_PATH = cfg.paths['save'] + MODEL_SAVE_NAME
+MODEL_PATH = cfg.paths['model'] + MODEL_LOAD_NAME
+
+
+TRAIN_PATH = cfg.paths['traindb']
+TEST_PATH = cfg.paths['testdb']
+VAL_PATH = cfg.paths['validatedb']
 
 def load_image(img):
     img = np.array(img)
@@ -25,7 +37,7 @@ def test_internet(path_image):
 
 if __name__ == '__main__':
 
-    path_model = '/home/geoffroy/Documents/Gate/big_model_30epoch_plusdefiltres_augmented'
-    path_image = '/home/geoffroy/Documents/Gate/Internet/'
+    path_model = MODEL_PATH
+    path_image = VAL_PATH
     model = keras.models.load_model(path_model)
     test_internet(path_image)
