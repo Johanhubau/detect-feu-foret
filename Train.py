@@ -2,28 +2,39 @@ from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
 from keras.layers import Dense, Activation, Dropout, BatchNormalization
 from keras.layers import Conv2D, MaxPooling2D, Flatten
-import numpy as np
 from matplotlib import pyplot as plt
-import keras
+import modelconfig as cfg
+
+MODEL_SAVE_NAME = "Lolipop"
+MODEL_LOAD_NAME = ""
+
+SAVE_PATH = cfg.paths['save'] + MODEL_SAVE_NAME
+MODEL_PATH = cfg.paths['model'] + MODEL_LOAD_NAME
+
+
+TRAIN_PATH = cfg.paths['traindb']
+TEST_PATH = cfg.paths['testdb']
+VAL_PATH = cfg.paths['validatedb']
+
 
 train_datagen = ImageDataGenerator(rescale=1./255)
 test_datagen = ImageDataGenerator(rescale=1./255)
 
 train_generator = train_datagen.flow_from_directory(
-    directory=r"/home/geoffroy/Documents/Gate/Bdd_perso_augmented/Train", #2443 elements
+    directory=TRAIN_PATH, #2443 elements
     target_size=(64, 64),
     color_mode="rgb",
-    batch_size=1221,
+    batch_size=50,
     class_mode="binary",
     shuffle=True,
     seed=42
 )
 
 test_generator = test_datagen.flow_from_directory(
-    directory=r"/home/geoffroy/Documents/Gate/Bdd_perso_augmented/Test", #320 elements
+    directory=TEST_PATH, #320 elements
     target_size=(64, 64),
     color_mode="rgb",
-    batch_size=320,
+    batch_size=50,
     class_mode="binary",
     shuffle=True,
     seed=37
@@ -31,7 +42,7 @@ test_generator = test_datagen.flow_from_directory(
 
 validate_datagen = ImageDataGenerator(rescale=1./255)
 predict_generator = test_datagen.flow_from_directory(
-    directory=r"/home/geoffroy/Documents/Gate/Internet",
+    directory=VAL_PATH,
     target_size=(64, 64),
     color_mode="rgb",
     batch_size=1,
@@ -42,7 +53,7 @@ predict_generator = test_datagen.flow_from_directory(
 
 """
 
-path_model="/home/geoffroy/Documents/Gate/little_model_30epoch"
+path_model=MODEL_PATH
 model = keras.models.load_model(path_model)
 
 
@@ -85,8 +96,8 @@ model.compile(optimizer='rmsprop',
 
 hist= model.fit_generator(
 train_generator,
-steps_per_epoch=2,
-epochs=6,
+steps_per_epoch=50,
+epochs=3,
 validation_data=test_generator,
 validation_steps=1)
 
@@ -95,6 +106,6 @@ plt.plot(hist.epoch, hist.history['loss'], label='loss')
 plt.legend()
 plt.show()
 
-model.save('/home/geoffroy/Documents/Gate/big_model_6epoch_plusdefiltres_augmented')
+model.save(SAVE_PATH)
 
 

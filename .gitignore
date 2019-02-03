@@ -1,0 +1,7 @@
+# Configuration Files #
+#######################
+*config.py
+
+# Pycharm Config #
+##################
+.idea/
