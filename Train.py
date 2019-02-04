@@ -4,7 +4,8 @@ from keras.layers import Dense, Activation, Dropout, BatchNormalization
 from keras.layers import Conv2D, MaxPooling2D, Flatten
 from matplotlib import pyplot as plt
 import keras
-import modelconfig as cfg
+# import modelconfig as cfg             # Pour utiliser notre propre Dataset
+import modelconfigALG_CorsicaDB as cfg  # Pour utiliser la Corsica Fire database
 
 MODEL_SAVE_NAME = "Lolipop"
 MODEL_LOAD_NAME = "Lolipop"
