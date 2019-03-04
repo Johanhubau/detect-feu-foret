@@ -1,14 +1,12 @@
 from keras.preprocessing.image import ImageDataGenerator
 import numpy as np
 from PIL import Image
-from matplotlib import pyplot as plt
 import os
-import modelconfig as cfg
 
 gen = ImageDataGenerator(rotation_range=40, width_shift_range=20, height_shift_range=20,horizontal_flip=True)
 
-path_origin=cfg.augment['origin']
-path_destination=cfg.augment['destination']
+path_origin="/home/geoffroy/Documents/Gate/Bdd_perso/Test/Fire/"
+path_destination="/home/geoffroy/Documents/Gate/Bdd_perso_augmented/Test/Fire/"
 error=0
 
 for elements in os.listdir(path_origin):
