@@ -7,6 +7,7 @@ from matplotlib import pyplot as plt
 import os
 import keras
 import keras.backend as K
+from sklearn.metrics import classification_report, confusion_matrix
 
 batch_size=64
 target_size=256
