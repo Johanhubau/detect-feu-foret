@@ -8,27 +8,6 @@ import os
 import keras
 import keras.backend as K
 
-def custom_categorical_crossentropy(targets, predictions):
-    targets = targets.eval(session=K.get_session()) # Devrait convertir le tenseur en numpy
-    predictions = predictions.eval(session=K.get_session())
-    print(targets[0])
-    print("--")
-    print(predictions)
-    epsilon = 1e-15
-    predictions = K.clip(predictions, epsilon, 1. - epsilon) #Pourquoi?
-    N = predictions.shape[0]
-    loss=0
-    a=1
-    b=2
-    for i in range(len(predictions)):
-        for j in range(len(predictions[i])): #Car one hot encoded
-            if targets[i,4]==1 or targets[i,0]==1: #Si image de feu ou fumée, on pourrait séparer les cas en pénalisant feu plus que fumée et fumée plus que autre
-                loss += b*targets[i,j] * np.log(predictions + epsilon)
-            else:
-                loss += a* targets[i, j] * np.log(predictions + epsilon)
-    loss=loss/N
-    return loss # Pas un tenseur...
-
 batch_size=64
 target_size=256
 
