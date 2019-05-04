@@ -7,30 +7,21 @@ from matplotlib import pyplot as plt
 import os
 import keras
 import keras.backend as K
-from sklearn.metrics import classification_report, confusion_matrix
 from PIL import Image
+from itertools import product
+from functools import partial
 
+def w_categorical_crossentropy(y_true, y_pred, weights):
 
-# def custom_categorical_crossentropy(targets, predictions):
-#     targets = targets.eval(session=K.get_session()) # Devrait convertir le tenseur en numpy
-#     predictions = predictions.eval(session=K.get_session())
-#     print(targets[0])
-#     print("--")
-#     print(predictions)
-#     epsilon = 1e-15
-#     predictions = K.clip(predictions, epsilon, 1. - epsilon) #Pourquoi?
-#     N = predictions.shape[0]
-#     loss=0
-#     a=1
-#     b=2
-#     for i in range(len(predictions)):
-#         for j in range(len(predictions[i])): #Car one hot encoded
-#             if targets[i,4]==1 or targets[i,0]==1: #Si image de feu ou fumée, on pourrait séparer les cas en pénalisant feu plus que fumée et fumée plus que autre
-#                 loss += b*targets[i,j] * np.log(predictions + epsilon)
-#             else:
-#                 loss += a* targets[i, j] * np.log(predictions + epsilon)
-#     loss=loss/N
-#     return loss # Pas un tenseur...
+    final_mask = K.zeros_like(y_pred[:, 0])
+    y_pred_max = K.max(y_pred, axis=1)
+    y_pred_max = K.expand_dims(y_pred_max, 1)
+    y_pred_max_mat = K.equal(y_pred, y_pred_max)
+    #y_pred_max_mat = K.cast(y_pred_max_mat, dtype='float32')
+    for c_p, c_t in product(range(nb_cl), range(nb_cl)):
+        final_mask += (K.cast(weights[c_t, c_p], K.floatx()) * K.cast(y_pred_max_mat[:, c_p], K.floatx()) * K.cast(
+            y_true[:, c_t], K.floatx()))
+    return K.categorical_crossentropy(y_true, y_pred) * final_mask
 
 def load_image(img):
     img = img.resize((256,256))
@@ -77,6 +68,14 @@ def F1(path_image):
 batch_size=64
 target_size=256
 labels= {'Fire': 0, 'Fog': 1, 'Not_fire': 2, 'Red_object': 3}
+
+nb_cl = len(labels)
+w_array = np.ones((nb_cl, nb_cl))
+for i in range(1, nb_cl):
+    w_array[0, i] = 1.5  # Coefficient avec lequel on veut pénaliser les faux négatifs de feu
+
+ncce = partial(w_categorical_crossentropy, weights=w_array)
+ncce.__name__ ='w_categorical_crossentropy'
 
 # Normalise et data augmentation
 train_datagen = ImageDataGenerator(rescale=1./255, rotation_range=5, fill_mode='reflect', horizontal_flip=True)
@@ -138,14 +137,14 @@ predict_generator = validate_datagen.flow_from_directory(
 
 print(train_generator.class_indices)
 
-path_model="/home/geoffroy/Documents/Gate/Modèles/MulticlassV3"
-model = keras.models.load_model(path_model)
+# path_model="/home/geoffroy/Documents/Gate/Modèles/MulticlassV3"
+# model = keras.models.load_model(path_model)
 
 
-hist_internet = model.predict_generator(
-predict_generator,
-steps=8
-)
+# hist_internet = model.predict_generator(
+# predict_generator,
+# steps=8
+# )
 
 
 
@@ -176,7 +175,7 @@ model.add(Dense(4, activation='softmax'))
 model.summary()
 
 model.compile(optimizer='adam',
-              loss='categorical_crossentropy', #loss='custom_categorical_crossentropy',
+              loss=ncce, #loss='categorical_crossentropy'
               metrics=['accuracy'])
 
 
@@ -203,18 +202,6 @@ plt.savefig('custom_acc')
 
 plt.show()
 
-model.save('/home/geoffroy/Documents/Gate/Modèles/MulticlassV3')
+model.save('/home/geoffroy/Documents/Gate/Modèles/MulticlassV4')
 
 F1("/home/geoffroy/Documents/Gate/Bdd_perso/Test/")
-
-
-#Marche pas:
-
-# Y_pred = model.predict_generator(test_generator, steps=1)
-# y_pred = np.argmax(Y_pred, axis=1)
-# print('Confusion Matrix')
-# print(confusion_matrix(test_generator.classes, y_pred))
-# print('Classification Report')
-# target_names = ['Fire', 'Fog', 'Not_fire', 'Red_object']
-# print(classification_report(test_generator.classes, y_pred, target_names=target_names))
-
