@@ -11,11 +11,6 @@ from PIL import Image
 from itertools import product
 from functools import partial
 
-def load_image(img):
-    img = img.resize((256,256))
-    img = np.array(img)
-    img = np.reshape(img, (1,256,256,3))
-    return img
 
 
 #Main code for the neural network starts here

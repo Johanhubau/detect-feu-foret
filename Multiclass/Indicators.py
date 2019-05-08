@@ -1,3 +1,16 @@
+import os
+import numpy as np
+import keras
+from PIL import Image
+
+labels= {'Fire': 0, 'Fog': 1, 'Not_fire': 2, 'Red_object': 3} # Our neural network classes
+
+
+# Here you load your trained network
+path_model="/home/geoffroy/Documents/Gate/Modèles/MulticlassV3"
+model = keras.models.load_model(path_model)
+
+# And then you launch this function to get the indicators
 def F1(path_image):
 
     nb_classes=len(os.listdir(path_image))
@@ -49,3 +62,10 @@ def F1(path_image):
 
     print("Precision=", precision, '\n Recall=', recall, "\n F1=", F1)
     return
+
+# Simple function to load an image
+def load_image(img):
+    img = img.resize((256,256))
+    img = np.array(img)
+    img = np.reshape(img, (1,256,256,3))
+    return img
