@@ -11,94 +11,27 @@ from PIL import Image
 from itertools import product
 from functools import partial
 
-def w_categorical_crossentropy(y_true, y_pred, weights):
-
-    final_mask = K.zeros_like(y_pred[:, 0])
-    y_pred_max = K.max(y_pred, axis=1)
-    y_pred_max = K.expand_dims(y_pred_max, 1)
-    y_pred_max_mat = K.equal(y_pred, y_pred_max)
-    #y_pred_max_mat = K.cast(y_pred_max_mat, dtype='float32')
-    for c_p, c_t in product(range(nb_cl), range(nb_cl)):
-        final_mask += (K.cast(weights[c_t, c_p], K.floatx()) * K.cast(y_pred_max_mat[:, c_p], K.floatx()) * K.cast(
-            y_true[:, c_t], K.floatx()))
-    return K.categorical_crossentropy(y_true, y_pred) * final_mask
-
 def load_image(img):
     img = img.resize((256,256))
     img = np.array(img)
     img = np.reshape(img, (1,256,256,3))
     return img
 
-def F1(path_image):
 
-    nb_classes=len(os.listdir(path_image))
-    correctly_attributed=nb_classes*[0]
-    attributed=nb_classes*[0]
-    nb_elements=nb_classes*[0]
-    confusion_matrix= np.zeros((nb_classes,nb_classes))
-    print(confusion_matrix)
+#Main code for the neural network starts here
 
-    for folder in os.listdir(path_image):
-        j=labels.get(folder)
-        k=0
-        l=0
-        m=0
-        n=0
-        print(j)
-        i = 0
-        nb_elements[j] = len(os.listdir(path_image + folder))
-        print(folder)
-        for elements in os.listdir(path_image + folder):
-            img = Image.open(path_image + folder + '/' + elements)
-            img = load_image(img)/255
-            y_prob = model.predict(img)
-            y_classes = y_prob.argmax(axis=-1)
-            attributed[y_classes[0]] = attributed[y_classes[0]]+1
-            if j == y_classes[0]:
-                i+=1
-            if 0==y_classes[0]:
-                k+=1
-            elif 1==y_classes[0]:
-                l+=1
-            elif 2==y_classes[0]:
-                m+=1
-            elif 3==y_classes[0]:
-                n+=1
-        confusion_matrix[j,:]+=[k,l,m,n]
-        correctly_attributed[j]=i
-
-    print('nb_elements=', nb_elements )
-    print('correctly_attributed=', correctly_attributed, "\n")
-    print('confusion_matrix:\n',confusion_matrix, "\n")
-    correctly_attributed = np.asarray(correctly_attributed)
-    attributed = np.asarray(attributed)
-    nb_elements = np.asarray(nb_elements)
-
-    precision=np.asarray(correctly_attributed)/attributed
-    recall=correctly_attributed/nb_elements
-    F1=2*(precision*recall)/(precision+recall)
-
-    print("Precision=", precision, '\n Recall=', recall, "\n F1=", F1)
-    return
 
 batch_size=64
 target_size=256
 labels= {'Fire': 0, 'Fog': 1, 'Not_fire': 2, 'Red_object': 3}
 
-nb_cl = len(labels)
-w_array = np.ones((nb_cl, nb_cl))
-for i in range(1, nb_cl):
-    w_array[0, i] = 1.5  # Coefficient avec lequel on veut pénaliser les faux négatifs de feu
-
-ncce = partial(w_categorical_crossentropy, weights=w_array)
-ncce.__name__ ='w_categorical_crossentropy'
 
 # Normalise et data augmentation
 train_datagen = ImageDataGenerator(rescale=1./255, rotation_range=5, fill_mode='reflect', horizontal_flip=True)
 validate_datagen = ImageDataGenerator(rescale=1./255)
 test_datagen = ImageDataGenerator(rescale=1./255)
 
-
+"""
 #Affiche un échantillon d'image
 fnames = [os.path.join('/home/geoffroy/Documents/Gate/Bdd_perso/Train/Fog', fname) for fname in os.listdir('/home/geoffroy/Documents/Gate/Bdd_perso/Train/Fog')]
 img_path = fnames[2]
@@ -114,9 +47,7 @@ for batch in train_datagen.flow(x, batch_size=1):
         break
 
 plt.show()
-
-
-
+"""
 train_generator = train_datagen.flow_from_directory(
     directory=r"/home/geoffroy/Documents/Gate/Bdd_perso/Train", #1525 elements,
     target_size=(target_size, target_size),
@@ -190,8 +121,8 @@ model.add(Dense(4, activation='softmax'))
 #model.load_weights('/home/geoffroy/Documents/Gate/corsica')
 model.summary()
 
-model.compile(optimizer='adam',
-              loss=ncce, #loss='categorical_crossentropy'
+model.compile(optimizer='adam',#loss=ncce,
+               loss='categorical_crossentropy',
               metrics=['accuracy'])
 
 
