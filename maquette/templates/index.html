@@ -1,3 +1,65 @@
 <html>
+<head>
+    <title>
+        DemoIAFF
+    </title>
+    <link href={{url_for('static', filename="index.css")}} rel="stylesheet" type="text/css">
+
+</head>
+
+<body>
+
+<div class="side">
+
+    <div class="quarter">
+        <div id="image">
+
+        </div>
+<!--<img src={{url_for('static', filename="img.jpg")}}, width="100%", height="100%">-->
+
+
+    </div>
+
+    <div class="quarter">
+        <div id="expected_result">
+
+        </div>
+
+    </div>
+</div>
+
+<div class="side">
+
+    <div class="quarter">
+        <div id="prediction">
+
+        </div>
+    </div>
+
+
+    <div class="quarter">
+        <div id="matrix">
+
+        </div>
+    </div>
+
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+   <script>
+     setInterval(function(){          $.ajax({
+           url: "/image",
+           type: "get",
+           data: {jsdata: ""},
+           success: function(response) {
+             $("#image").html(response);
+           },
+           error: function(xhr) {
+             //Do Something to handle error
+           }
+         });
+     }, 5000);
+   </script>
+</body>
 
 </html>
