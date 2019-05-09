@@ -27,5 +27,5 @@ def display_activation(activations, col_size, row_size, act_index):
             ax[row][col].imshow(activation[0, :, :, activation_index], cmap='gray')
             activation_index += 1
 
-display_activation(activations, 4, 4, 2)
+display_activation(activations, 4, 4, 5)
 plt.show()

@@ -27,7 +27,7 @@ if __name__ == '__main__':
 
     labels={'Fire': 0, 'Not_fire': 1, 'Train_fog': 2, 'Train_red': 3, 'Train_smoke': 4}
 
-    path_model = '/home/geoffroy/Documents/Gate/Modèles/MulticlassV1'
-    path_image = '/home/geoffroy/Documents/Gate/Internet/'
+    path_model = '/home/alexis51151/detect-feu-foret/Models/MulticlassV1'
+    path_image = '/home/alexis51151/detect-feu-foret/Internet/'
     model = keras.models.load_model(path_model)
     test_internet(path_image)

@@ -1,14 +1,9 @@
 
-
+#Modification to make : when only zeros in one line, not to divide it
 import seaborn as sn
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-"""array = [[70,5,5,0],
-     [7,25,6,0],
-     [0,0,34,0],
-     [0,0,2,5]]
-"""
 array = [[21,1,0,1],
      [0,0,0,0],
      [9,3,7,2],
