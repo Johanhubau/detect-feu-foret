@@ -3,12 +3,16 @@ import numpy as np
 import keras
 from PIL import Image
 
-labels= {'Fire': 0, 'Fog': 1, 'Not_fire': 2, 'Red_object': 3} # Our neural network classes
+labels= {'Fire': 0, 'Fog': 2, 'Not_fire': 1, 'Red_object': 3, 'Smoke': 4} # Our neural network classes
 
 
 # Here you load your trained network
-path_model="/home/geoffroy/Documents/Gate/Modèles/MulticlassV3"
+path_model="/home/alexis51151/detect-feu-foret/Models/MulticlassV1"
 model = keras.models.load_model(path_model)
+
+# Here you load your image you want to visualize when passed through the neural network
+path_image = "/home/alexis51151/Documents/Bdd_multiclasse/Test/"
+
 
 # And then you launch this function to get the indicators
 def F1(path_image):
@@ -26,9 +30,10 @@ def F1(path_image):
         l=0
         m=0
         n=0
+        o=0
         print(j)
         i = 0
-        nb_elements[j] = len(os.listdir(path_image + folder))
+        nb_elements[j] = len(os.listdir(path_image +folder))
         print(folder)
         for elements in os.listdir(path_image + folder):
             img = Image.open(path_image + folder + '/' + elements)
@@ -46,7 +51,9 @@ def F1(path_image):
                 m+=1
             elif 3==y_classes[0]:
                 n+=1
-        confusion_matrix[j,:]+=[k,l,m,n]
+            elif 4==y_classes[0]:
+                o+=1
+        confusion_matrix[j,:]+=[k,l,m,n,o]
         correctly_attributed[j]=i
 
     print('nb_elements=', nb_elements )
@@ -65,7 +72,9 @@ def F1(path_image):
 
 # Simple function to load an image
 def load_image(img):
-    img = img.resize((256,256))
+    img = img.resize((75,75))
     img = np.array(img)
-    img = np.reshape(img, (1,256,256,3))
+    img = np.reshape(img, (1,75,75,3))
     return img
+
+F1(path_image)
