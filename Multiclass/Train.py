@@ -15,8 +15,7 @@ from functools import partial
 
 #Main code for the neural network starts here
 
-
-batch_size=64
+batch_size=32 #Pour Geoffroy : 64
 target_size=256
 labels= {'Fire': 0, 'Fog': 1, 'Not_fire': 2, 'Red_object': 3}
 
@@ -44,7 +43,7 @@ for batch in train_datagen.flow(x, batch_size=1):
 plt.show()
 """
 train_generator = train_datagen.flow_from_directory(
-    directory=r"/home/geoffroy/Documents/Gate/Bdd_perso/Train", #1525 elements,
+    directory=r"/home/alexis51151/Documents/Bdd_multiclasse/Train", #1525elements,
     target_size=(target_size, target_size),
     color_mode="rgb",
     batch_size=batch_size,
@@ -57,10 +56,10 @@ train_generator = train_datagen.flow_from_directory(
 #predictions = [labels[k] for k in predicted_class_indices]
 
 test_generator = test_datagen.flow_from_directory(
-    directory=r"/home/geoffroy/Documents/Gate/Bdd_perso/Test", #159 elements
+    directory=r"/home/alexis51151/Documents/Bdd_multiclasse/Test", #159 elements
     target_size=(target_size, target_size),
     color_mode="rgb",
-    batch_size=159,
+    batch_size=40, #Pour Geoffroy : 159
     class_mode="categorical",
     shuffle=True,
     seed=37
@@ -68,10 +67,10 @@ test_generator = test_datagen.flow_from_directory(
 
 
 predict_generator = validate_datagen.flow_from_directory(
-    directory=r"/home/geoffroy/Documents/Gate/Internet",
+    directory=r"/home/alexis51151/detect-feu-foret/Internet",
     target_size=(target_size, target_size),
     color_mode="rgb",
-    batch_size=46,
+    batch_size=20, #Pour Geoffroy : 46
     class_mode="categorical",
     shuffle=True,
     seed=35
@@ -111,7 +110,7 @@ model.add(Dense(100, activation='relu'))  #Avant tout à 100
 #model.add(layers.BatchNormalization())
 model.add(Dense(100, activation='relu'))
 #model.add(layers.BatchNormalization())
-model.add(Dense(4, activation='softmax'))
+model.add(Dense(5, activation='softmax')) # This layer only stands for having our 5 final classes
 
 #model.load_weights('/home/geoffroy/Documents/Gate/corsica')
 model.summary()
@@ -133,17 +132,17 @@ plt.plot(hist.epoch, hist.history['val_loss'], 'm', label="val_loss")
 plt.plot(hist.epoch, hist.history['loss'], 'b', label='loss')
 plt.title('Loss')
 plt.legend()
-plt.savefig('custom_loss')
+plt.savefig('loss')
 
 plt.figure()
 plt.plot(hist.epoch, hist.history['val_acc'], 'm', label="val_acc")
 plt.plot(hist.epoch, hist.history['acc'], 'b', label='acc')
 plt.title('Accuracy')
 plt.legend()
-plt.savefig('custom_acc')
+plt.savefig('acc')
 
 plt.show()
 
-model.save('/home/geoffroy/Documents/Gate/Modèles/MulticlassV4')
+model.save('/home/geoffroy/Documents/Gate/Modèles/MulticlassV5')
 
-F1("/home/geoffroy/Documents/Gate/Bdd_perso/Test/")
+#F1("/home/geoffroy/Documents/Gate/Bdd_perso/Test/") #To print the indicators
