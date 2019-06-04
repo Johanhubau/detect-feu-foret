@@ -1,5 +1,5 @@
 <html>
-<meta http-equiv="refresh" content=10>
+<meta http-equiv="refresh" content=30>
 <head>
     <title>
         DemoIAFF
@@ -14,7 +14,7 @@
 
     <div class="quarter">
         <div class="imagecontainer">
-            <img src={{url_for('static', filename="img.jpg" )}}, width="100%" , height="100%">
+            <img src="{{url_for('static', filename='img.jpg' )}}", width="100%" , height="100%">
         </div>
     </div>
 
@@ -36,11 +36,11 @@
                 {% for (name, percentage) in predictions %}
                 <li>
                     <div class="name">
-                        {{name}}
+                        {{ name }}
                     </div>
 
                     <div class="prediction">
-                        {{percentage}}
+                        {{ percentage }}
                     </div>
                 </li>
                 {% endfor %}
@@ -51,7 +51,7 @@
 
     <div class="quarter">
         <div class="imagecontainer">
-            <img src={{url_for('static', filename="matrix.jpg" )}}, width="100%" , height="100%">
+            <img src="{{url_for('static', filename='matrix.jpg' )}}", width="100%" , height="100%">
         </div>
     </div>
 
