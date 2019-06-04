@@ -10,8 +10,6 @@ import seaborn as sn
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# conv_base = VGG16(weights='imagenet', include_top=False, input_shape=(256,256,3))
-
 MAIN_PATH = "/home/heisenberg/gate/DB/Bdd_perso/Test/"
 
 class_names = ["Feu", "Fumée ou brouillard", "Non feu", "Objet rouge"]
